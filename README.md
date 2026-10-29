@@ -1,7 +1,7 @@
 # IS450-Assignment7 — Trail Weather Log
 
-**Student name:** Olivia Leigh
-**GitHub username:** meolivialeigh
+- **Student name:** Olivia Leigh
+- **GitHub username:** meolivialeigh
 
 ## Description
 
