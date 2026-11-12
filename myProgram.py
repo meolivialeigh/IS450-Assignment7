@@ -93,6 +93,32 @@ def print_summary(summary: dict) -> None:
     print("  Days Open:", summary["open_days"], "of", summary["recorded_days"])
 
 
+def count_conditions(readings: list[dict]) -> dict:
+    counts = {"Open": 0, "Caution": 0, "Closed": 0}
+    for reading in readings:
+        status = classify_day(reading["high"], reading["rain"])
+        counts[status] = counts[status] + 1
+    return counts
+
+
+def print_condition_breakdown(counts: dict) -> None:
+    total = counts["Open"] + counts["Caution"] + counts["Closed"]
+
+    print("SEASON CONDITION BREAKDOWN")
+    print("------------------------------------------")
+
+    if total == 0:
+        print("  No readings to report.")
+        print()
+        return
+
+    for status in ["Open", "Caution", "Closed"]:
+        percent = counts[status] / total * 100
+        print(" ", status + ":", counts[status], "of", total,
+              "(" + format(percent, ".1f") + "%)")
+    print()
+
+
 def main() -> None:
     trails = ["Redwood Loop", "Eagle Ridge", "Desert Wash"]
     days = 5
@@ -119,6 +145,9 @@ def main() -> None:
         summary = summarize_trail(saved_readings, trail)
         print_summary(summary)
         print()
+
+    condition_counts = count_conditions(saved_readings)
+    print_condition_breakdown(condition_counts)
 
 
 if __name__ == "__main__":
