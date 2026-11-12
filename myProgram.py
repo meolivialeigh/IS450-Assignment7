@@ -1,6 +1,8 @@
 # Name: Olivia Leigh
 # Description: Assignment 7 - Trail Weather Log
 
+import csv
+import os
 import random
 
 LOG_FILE = "trail_log.txt"
@@ -92,8 +94,17 @@ def print_summary(summary: dict) -> None:
     print("  Total Rainfall:", format(summary["total_rain"], ".2f") + "in")
     print("  Days Open:", summary["open_days"], "of", summary["recorded_days"])
 
+def write_trails_to_csv(summary: list[dict], file_name: str) -> None:
+    with open(file_name, "w", newline="", encoding="utf-8") as csv_file:
+        writer = csv.DictWriter(csv_file, fieldnames=["Trail", "Average High", "Warmest Day", "Total Rainfall", "Days Open"])
+        writer.writeheader()
+        writer.writerows(summary)
 
 def main() -> None:
+    # Work from the folder this script lives in so the data files are
+    # found no matter where the program is launched from.
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
     trails = ["Redwood Loop", "Eagle Ridge", "Desert Wash"]
     days = 5
 
