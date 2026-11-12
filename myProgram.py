@@ -101,10 +101,6 @@ def write_trails_to_csv(summary: list[dict], file_name: str) -> None:
         writer.writerows(summary)
 
 def main() -> None:
-    # Work from the folder this script lives in so the data files are
-    # found no matter where the program is launched from.
-    os.chdir(os.path.dirname(os.path.abspath(__file__)))
-
     trails = ["Redwood Loop", "Eagle Ridge", "Desert Wash"]
     days = 5
 
