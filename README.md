@@ -42,3 +42,15 @@ python myProgram.py
 
 From Visual Studio Code, open the project folder, open `myProgram.py`, and press
 the Run button.
+
+## Feature Development Comparison
+
+I added two features to this program, one on each branch.
+
+On manual-feature I wrote a CSV export manually. It takes the season summary the program already builds and writes it to trail_conditions.csv. I reused the csv.DictWriter pattern from my Assignment 6 program and formatted each row so the file matches what prints on screen.
+
+On ai-feature I defined a season condition breakdown and had Claude implement it. It counts every reading as Open, Caution, or Closed and prints the split with percentages. I chose the feature and wrote the spec; the AI wrote the functions and wired them into main().
+
+The AI version ran correctly the first time, and I didn't reject any of it. Two things did change during testing. I had planned to check that the percentages add up to 100, and they didn't... each one rounds on its own, so they land anywhere from 99.9 to 100.1. The test was the issue moreso than the code. The other change was a guard so an empty list of readings doesn't crash the division.
+
+The AI feature gives me greater confidence because this language isn't something I'm using on a regular basis like SQL, so having more robust testing and the ability to ask questions as I go is helpful.
