@@ -95,6 +95,32 @@ def print_summary(summary: dict) -> None:
     print("  Days Open:", summary["open_days"], "of", summary["recorded_days"])
 
 
+def count_conditions(readings: list[dict]) -> dict:
+    counts = {"Open": 0, "Caution": 0, "Closed": 0}
+    for reading in readings:
+        status = classify_day(reading["high"], reading["rain"])
+        counts[status] = counts[status] + 1
+    return counts
+
+
+def print_condition_breakdown(counts: dict) -> None:
+    total = counts["Open"] + counts["Caution"] + counts["Closed"]
+
+    print("SEASON CONDITION BREAKDOWN")
+    print("------------------------------------------")
+
+    if total == 0:
+        print("  No readings to report.")
+        print()
+        return
+
+    for status in ["Open", "Caution", "Closed"]:
+        percent = counts[status] / total * 100
+        print(" ", status + ":", counts[status], "of", total,
+              "(" + format(percent, ".1f") + "%)")
+    print()
+
+
 def write_trails_to_csv(summaries: list[dict], file_name: str) -> None:
     with open(file_name, "w", newline="", encoding="utf-8") as csv_file:
         writer = csv.DictWriter(
@@ -112,6 +138,7 @@ def write_trails_to_csv(summaries: list[dict], file_name: str) -> None:
                 "Total Rainfall": format(summary["total_rain"], ".2f"),
                 "Days Open": summary["open_days"]
             })
+
 
 def main() -> None:
     # Work from the folder this script lives in so the data files are
@@ -151,6 +178,9 @@ def main() -> None:
     for summary in summaries:
         print_summary(summary)
         print()
+
+    condition_counts = count_conditions(saved_readings)
+    print_condition_breakdown(condition_counts)
 
     print("Output File:", output_file)
     print()
