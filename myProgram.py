@@ -1,6 +1,8 @@
 # Name: Olivia Leigh
 # Description: Assignment 7 - Trail Weather Log
 
+import csv
+import os
 import random
 
 LOG_FILE = "trail_log.txt"
@@ -93,7 +95,28 @@ def print_summary(summary: dict) -> None:
     print("  Days Open:", summary["open_days"], "of", summary["recorded_days"])
 
 
+def write_trails_to_csv(summaries: list[dict], file_name: str) -> None:
+    with open(file_name, "w", newline="", encoding="utf-8") as csv_file:
+        writer = csv.DictWriter(
+            csv_file, 
+            fieldnames=["Trail", "Average High", "Warmest Day", 
+                        "Total Rainfall", "Days Open"]
+        )
+        writer.writeheader()
+
+        for summary in summaries:
+            writer.writerow({
+                "Trail": summary["trail"],
+                "Average High": format(summary["average_high"], ".1f"),
+                "Warmest Day": summary["warmest"],
+                "Total Rainfall": format(summary["total_rain"], ".2f"),
+                "Days Open": summary["open_days"]
+            })
+
 def main() -> None:
+    # Work from the folder this script lives in so the data files are
+    # found no matter where the program is launched from.
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
     trails = ["Redwood Loop", "Eagle Ridge", "Desert Wash"]
     days = 5
 
@@ -113,13 +136,24 @@ def main() -> None:
 
     print_daily_report(saved_readings)
 
-    print("SEASON SUMMARY")
-    print("------------------------------------------")
+    #Calc summaries before export
+    summaries = []
     for trail in trails:
         summary = summarize_trail(saved_readings, trail)
+        summaries.append(summary)
+
+    #Export summaries
+    output_file = "trail_conditions.csv"
+    write_trails_to_csv(summaries, output_file)
+
+    print("SEASON SUMMARY")
+    print("------------------------------------------")
+    for summary in summaries:
         print_summary(summary)
         print()
 
+    print("Output File:", output_file)
+    print()
 
 if __name__ == "__main__":
     main()
